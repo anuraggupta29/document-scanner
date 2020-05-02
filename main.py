@@ -11,7 +11,7 @@ def autocanny(image, sigma=0.33):
 
     return edged
 
-filepath = 'test_images/test4.jpg'
+filepath = 'test_images/test.jpg'
 resizeHeight = 600
 original = None
 img = None
