@@ -50,6 +50,7 @@ largestcnt = max(cnts, key = lambda x: cv2.arcLength(x, True))
 hull = cv2.convexHull(largestcnt)
 perimeter = cv2.arcLength(hull, True)
 corners = cv2.approxPolyDP(hull, 0.02*perimeter, True)
+print(corners)
 roidrawn = cv2.drawContours(img.copy(), [hull], -1, (0,255,0), 3)
 
 factor = original.shape[0]/resizeHeight
@@ -58,11 +59,9 @@ cornerslist = (corners.reshape(4,2)*factor).astype(int).tolist()
 print(cornerslist)
 
 tl = min(cornerslist, key = lambda x: x[0]+x[1])
-cornerslist.remove(tl)
-tr = min(cornerslist, key = lambda x: x[1])
+tr = max(cornerslist, key = lambda x: x[0]-x[1])
 br = max(cornerslist, key = lambda x: x[0]+x[1])
-cornerslist.remove(br)
-bl = max(cornerslist, key = lambda x: x[1])
+bl = min(cornerslist, key = lambda x: x[0]-x[1])
 
 cornerslist = np.array([tl, tr, br, bl], dtype='float32').reshape(4,2)
 
@@ -71,8 +70,8 @@ widthBottom = np.sqrt((bl[0] - br[0])**2 + (bl[1] - br[1])**2)
 heightLeft = np.sqrt((tl[0] - bl[0])**2 + (tl[1] - bl[1])**2)
 heightRight = np.sqrt((tr[0] - br[0])**2 + (tr[1] - br[1])**2)
 
-maxWidth = int(max(widthTop, widthBottom))
-maxHeight = int(max(heightLeft, heightRight))
+maxWidth = int((widthTop+widthBottom)/2)
+maxHeight = int((heightLeft+heightRight)/2)
 
 dst = np.array([
     [0,0],
@@ -83,12 +82,12 @@ dst = np.array([
 transformMatrix = cv2.getPerspectiveTransform(cornerslist, dst)
 scan = cv2.warpPerspective(original, transformMatrix, (maxWidth, maxHeight))
 
-cv2.imwrite('output/scanned.jpg', scan)
+#cv2.imwrite('output/scanned.jpg', scan)
 
 #cv2.imshow('Orignal', imutils.resize(original, height=resizeHeight))
 #cv2.imshow('Gray', gray)
 #cv2.imshow('Blurred', blurred)
-#cv2.imshow('Autocanny', edged)
+cv2.imshow('Autocanny', edged)
 cv2.imshow('Document', roidrawn)
 cv2.imshow('Scanned', imutils.resize(scan, height=resizeHeight))
 cv2.waitKey(0)
