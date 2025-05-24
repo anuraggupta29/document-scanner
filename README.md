@@ -1,8 +1,4 @@
 <h1>Document Scanner and OCR</h1>
-
-<p>For GUI version of this project go to : https://github.com/anuraggupta29/DocScan-electronJS</p>
-
-<h4>In Progress</h4>
  
  <ul>
  <li>This is a desktop based GUI Document Scanner.</li>
